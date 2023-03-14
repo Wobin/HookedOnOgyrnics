@@ -1,5 +1,6 @@
 --[[
 Title: Hooked On Ogrynics
+Version: 1.1
 Author: Wobin
 Date: 04/03/2023
 Repository: https://github.com/Wobin/HookedOnOgrynics
