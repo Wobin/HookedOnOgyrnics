@@ -8,6 +8,7 @@ Repository: https://github.com/Wobin/HookedOnOgrynics
 local mod = get_mod("Hooked On Ogrynics")
 local UIWidget = require("scripts/managers/ui/ui_widget")
 local MissionTemplates = require("scripts/settings/mission/mission_templates")
+local UIRenderer = require("scripts/managers/ui/ui_renderer")
 
 local lookup = {
   ["loc_mission_board_main_objective_propaganda_description"] = "Stop_Noisy",
@@ -28,26 +29,30 @@ local lookup = {
 mod:hook_safe(CLASS.MissionBoardView, "_set_selected_mission", function(self, mission, move)
     local mission_template = MissionTemplates[mission.map]
     local ogryn_widget = self._widgets_by_name.ogryn_translation    
-    local mission = lookup[mission_template.mission_description]
-    if mission == nil then
-      mission = "confused_ogryn_noises"
+    local ogryn_name = lookup[mission_template.mission_description]
+    if ogryn_name == nil then
+      ogryn_name = "confused_ogryn_noises"
     end
     ogryn_widget.dirty = true
-    ogryn_widget.content.ogryn_translator_text = "\"" ..  mod:localize(mission) .. "\""
+    ogryn_widget.content.text = "\"" ..  mod:localize(ogryn_name) .. "\""
+    
+		local text_width, text_height = UIRenderer.text_size(self:_begin_render_offscreen(), ogryn_widget.content.text, ogryn_widget.style.text.font_type, ogryn_widget.style.text.font_size)
+    ogryn_widget.style.frame.size = { text_width + 15, text_height + 12}    
+		ogryn_widget.style.background.size = { text_width + 15, text_height + 12}		    
   end)
 
 mod:hook_safe(CLASS.MissionBoardView, "_set_selected_quickplay", function(self, move)
      local ogryn_widget = self._widgets_by_name.ogryn_translation
      ogryn_widget.dirty = true
-     ogryn_widget.content.ogryn_translator_text = "\"" .. mod:localize("Emprah_Picks").. "\""
+     ogryn_widget.content.text = "\"" .. mod:localize("Emprah_Picks").. "\""
 end)
 
 mod:hook_require("scripts/ui/views/mission_board_view/mission_board_view_definitions", function(MissionBoardViewDefinitions)      
     if not MissionBoardViewDefinitions.ogryn_translation_template then      
       MissionBoardViewDefinitions.widget_definitions.ogryn_translation = UIWidget.create_definition({
           {
-            value_id = "ogryn_translator_text",
-            style_id = "ogryn_translator_text",
+            value_id = "text",
+            style_id = "text",
             pass_type = "text",
             scenegraph_id = "ogryn_translation",
             value = "ogryn translations",
@@ -71,25 +76,24 @@ mod:hook_require("scripts/ui/views/mission_board_view/mission_board_view_definit
                  560,
                  30
                 }
-              }
+              },                        
             },
           {
-            style_id = "ogryn_frame",
+            style_id = "frame",
             scenegraph_id = "ogryn_translation",
             pass_type = "texture",
             value = "content/ui/materials/frames/frame_tile_2px",       
-            style = {
-              scale_to_material = true,
+            style = {              
               color = Color.terminal_frame(nil, true),
               offset = {
                 0,
                 0,
                 2
-              }
-            }
+              },               
+            },
           },
           {
-            style_id = "ogryn_background",
+            style_id = "background",
             scenegraph_id = "ogryn_translation",
             pass_type = "texture",
             value = "content/ui/materials/backgrounds/default_square",
