@@ -1,8 +1,8 @@
 --[[
 Title: Hooked On Ogrynics
-Version: 1.1
+Version: 1.3
 Author: Wobin
-Date: 04/03/2023
+Date: 16/11/2023
 Repository: https://github.com/Wobin/HookedOnOgrynics
 ]]--
 
@@ -25,27 +25,36 @@ local lookup = {
   ["loc_mission_board_main_objective_habblock_description"] = "Scan_Stinky",
   ["loc_mission_board_main_objective_trainstation_description"] = "Kill_Station_Boss",
   ["loc_mission_board_main_objective_enforcer_description"] = "Kill_Enforcer_Boss",
-  ["loc_mission_board_main_objective_waterstockpile_description"] = "Clean_Splashy"  
-  }
+  ["loc_mission_board_main_objective_waterstockpile_description"] = "Clean_Splashy",
+  ["loc_mission_board_main_objective_rise_description"] = "Grab_Shiny",
+  ["loc_mission_board_main_objective_archives_description"] = "Steal_Scrolly",
+  ["loc_mission_board_main_objective_armoury_description"] = "Find_Stims"
+}
+
+local resize_text = function(self, ogryn_widget)
+    local text_width, text_height = UIRenderer.text_size(self:_begin_render_offscreen(), ogryn_widget.content.text, ogryn_widget.style.text.font_type, ogryn_widget.style.text.font_size)
+     ogryn_widget.style.frame.size = { text_width + 15, text_height + 12}    
+     ogryn_widget.style.background.size = { text_width + 15, text_height + 12}	
+end
+
+local set_text = function(self, text)
+  local ogryn_widget = self._widgets_by_name.ogryn_translation
+    ogryn_widget.dirty = true
+    ogryn_widget.content.text = "\"" ..  mod:localize(text) .. "\""
+    resize_text(self, ogryn_widget)		
+end
+
 mod:hook_safe(CLASS.MissionBoardView, "_set_selected_mission", function(self, mission, move)
-    local mission_template = MissionTemplates[mission.map]
-    local ogryn_widget = self._widgets_by_name.ogryn_translation    
+    local mission_template = MissionTemplates[mission.map]    
     local ogryn_name = lookup[mission_template.mission_description]
     if ogryn_name == nil then
       ogryn_name = "confused_ogryn_noises"
     end
-    ogryn_widget.dirty = true
-    ogryn_widget.content.text = "\"" ..  mod:localize(ogryn_name) .. "\""
-    
-		local text_width, text_height = UIRenderer.text_size(self:_begin_render_offscreen(), ogryn_widget.content.text, ogryn_widget.style.text.font_type, ogryn_widget.style.text.font_size)
-    ogryn_widget.style.frame.size = { text_width + 15, text_height + 12}    
-		ogryn_widget.style.background.size = { text_width + 15, text_height + 12}		    
+    set_text(self, ogryn_name)
   end)
 
-mod:hook_safe(CLASS.MissionBoardView, "_set_selected_quickplay", function(self, move)
-     local ogryn_widget = self._widgets_by_name.ogryn_translation
-     ogryn_widget.dirty = true
-     ogryn_widget.content.text = "\"" .. mod:localize("Emprah_Picks").. "\""
+mod:hook_safe(CLASS.MissionBoardView, "_set_selected_quickplay", function(self, move)     
+     set_text(self, "Emprah_Picks")
 end)
 
 mod:hook_require("scripts/ui/views/mission_board_view/mission_board_view_definitions", function(MissionBoardViewDefinitions)      

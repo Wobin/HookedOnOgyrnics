@@ -52,5 +52,14 @@ return {
    },
    Clean_Splashy = {
       en = "Clean Splashy"
-   }
+   },
+   Grab_Shiny = {
+     en = "Grab Shiny"
+   },
+   Steal_Scrolly = {
+     en = "Steal Scrolly"
+   },
+   Find_Stims = {
+     en = "Find Stims"
+     }
 }
