@@ -61,5 +61,8 @@ return {
    },
    Find_Stims = {
      en = "Find Stims"
+   },
+   Smash_Stims = {
+     en = "Smash Stim Machines"
      }
 }

@@ -28,7 +28,8 @@ local lookup = {
   ["loc_mission_board_main_objective_waterstockpile_description"] = "Clean_Splashy",
   ["loc_mission_board_main_objective_rise_description"] = "Grab_Shiny",
   ["loc_mission_board_main_objective_archives_description"] = "Steal_Scrolly",
-  ["loc_mission_board_main_objective_armoury_description"] = "Find_Stims"
+  ["loc_mission_board_main_objective_armoury_description"] = "Find_Stims",
+  ["loc_mission_board_main_objective_raid_description"] = "Smash_Stims",
 }
 
 local resize_text = function(self, ogryn_widget)
