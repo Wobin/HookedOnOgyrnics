@@ -41,8 +41,8 @@ return {
    Push_Freezy = {
       en = "Push Freezy"
    },
-   Scan_Stinky = {
-      en = "Scan Stinky"
+   Scary_Tree = {
+      en = "Scary Tree"
    },
    Kill_Station_Boss = {
       en = "Kill Station Boss"
@@ -64,5 +64,14 @@ return {
    },
    Smash_Stims = {
      en = "Smash Stim Machines"
+   },
+   Make_Steely = {
+     en = "Make Steely"
+   },
+   Death_Train = {
+     en = "DEATH TRAAAAAAIN!"
+   }
+   Stop_Ritual = {
+     en = "Stop Cult Church"
      }
 }
