@@ -70,8 +70,8 @@ return {
    },
    Death_Train = {
      en = "DEATH TRAAAAAAIN!"
-   }
+   },
    Stop_Ritual = {
      en = "Stop Cult Church"
-     }
+   }
 }

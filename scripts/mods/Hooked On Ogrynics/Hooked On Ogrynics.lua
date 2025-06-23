@@ -1,8 +1,8 @@
 --[[
 Title: Hooked On Ogrynics
-Version: 1.7
+Version: 1.8
 Author: Wobin
-Date: 05/12/2024
+Date: 23/06/2025
 Repository: https://github.com/Wobin/HookedOnOgrynics
 ]]--
 
@@ -11,7 +11,7 @@ local UIWidget = require("scripts/managers/ui/ui_widget")
 local MissionTemplates = require("scripts/settings/mission/mission_templates")
 local UIRenderer = require("scripts/managers/ui/ui_renderer")
 
-mod.version = "1.7"
+mod.version = "1.8"
 
 local lookup = {
   ["loc_mission_board_main_objective_propaganda_description"] = "Stop_Noisy",
@@ -38,20 +38,22 @@ local lookup = {
 }
 
 local resize_text = function(self, ogryn_widget)
-    local text_width, text_height = UIRenderer.text_size(self:_begin_render_offscreen(), ogryn_widget.content.text, ogryn_widget.style.text.font_type, ogryn_widget.style.text.font_size)
+    local text_width, text_height = UIRenderer.text_size(self._ui_renderer, ogryn_widget.content.text, ogryn_widget.style.text.font_type, ogryn_widget.style.text.font_size)
      ogryn_widget.style.frame.size = { text_width + 15, text_height + 12}    
      ogryn_widget.style.background.size = { text_width + 15, text_height + 12}	
 end
 
 local set_text = function(self, text)
   local ogryn_widget = self._widgets_by_name.ogryn_translation
+  if not ogryn_widget then return end
     ogryn_widget.dirty = true
     ogryn_widget.content.text = "\"" ..  mod:localize(text) .. "\""
     resize_text(self, ogryn_widget)		
 end
 
-mod:hook_safe(CLASS.MissionBoardView, "_set_selected_mission", function(self, mission, move)
-    local mission_template = MissionTemplates[mission.map]    
+mod:hook_safe(CLASS.MissionBoardView, "_set_selected_mission", function(self, mission, move)        
+    if not self:_mission(self._selected_mission_id) then return end
+    local mission_template = MissionTemplates[self:_mission(self._selected_mission_id).map]   
     local ogryn_name = lookup[mission_template.mission_description]
     if ogryn_name == nil then
       ogryn_name = "confused_ogryn_noises"
@@ -63,7 +65,7 @@ mod:hook_safe(CLASS.MissionBoardView, "_set_selected_quickplay", function(self, 
      set_text(self, "Emprah_Picks")
 end)
 
-mod:hook_require("scripts/ui/views/mission_board_view/mission_board_view_definitions", function(MissionBoardViewDefinitions)      
+mod:hook_require("scripts/ui/views/mission_board_view_pj/mission_board_view_definitions", function(MissionBoardViewDefinitions)          
     if not MissionBoardViewDefinitions.ogryn_translation_template then      
       MissionBoardViewDefinitions.widget_definitions.ogryn_translation = UIWidget.create_definition({
           {
@@ -122,21 +124,21 @@ mod:hook_require("scripts/ui/views/mission_board_view/mission_board_view_definit
     if not MissionBoardViewDefinitions.scenegraph_definition.ogryn_translation then
         MissionBoardViewDefinitions.scenegraph_definition.ogryn_translation = {
           vertical_alignment = "top",
-          parent = "detail_location",
+          parent = "sidebar_content",
           horizontal_alignment = "left",
           size = {
                     560,
                     30
                   },
                   position = {
-                    15,
-                     5,
+                    -20,
+                    -30,
                     10
                   }
         }
-      end
-      
-    end)
+      end   
+    end
+    )
   
 mod.on_all_mods_loaded = function()
   mod:info(mod.version)
