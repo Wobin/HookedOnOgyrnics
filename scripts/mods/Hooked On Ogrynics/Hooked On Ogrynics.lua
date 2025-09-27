@@ -1,8 +1,8 @@
 --[[
 Title: Hooked On Ogrynics
-Version: 1.8
+Version: 1.9
 Author: Wobin
-Date: 23/06/2025
+Date: 24/09/2025
 Repository: https://github.com/Wobin/HookedOnOgrynics
 ]]--
 
@@ -11,7 +11,7 @@ local UIWidget = require("scripts/managers/ui/ui_widget")
 local MissionTemplates = require("scripts/settings/mission/mission_templates")
 local UIRenderer = require("scripts/managers/ui/ui_renderer")
 
-mod.version = "1.8"
+mod.version = "1.9"
 
 local lookup = {
   ["loc_mission_board_main_objective_propaganda_description"] = "Stop_Noisy",
@@ -51,9 +51,9 @@ local set_text = function(self, text)
     resize_text(self, ogryn_widget)		
 end
 
-mod:hook_safe(CLASS.MissionBoardView, "_set_selected_mission", function(self, mission, move)        
-    if not self:_mission(self._selected_mission_id) then return end
-    local mission_template = MissionTemplates[self:_mission(self._selected_mission_id).map]   
+mod:hook_safe(CLASS.MissionBoardView, "_update_mission_info_panel", function(self)       
+    if not self:_mission(self._selected_mission_id, true) then return end
+    local mission_template = MissionTemplates[self:_mission(self._selected_mission_id, true).map]       
     local ogryn_name = lookup[mission_template.mission_description]
     if ogryn_name == nil then
       ogryn_name = "confused_ogryn_noises"

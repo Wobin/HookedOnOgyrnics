@@ -8,5 +8,6 @@ return {
 			mod_localization = "Hooked On Ogrynics/scripts/mods/Hooked On Ogrynics/Hooked On Ogrynics_localization",
 		})
 	end,
+	version = "1.9",
 	packages = {},
 }
