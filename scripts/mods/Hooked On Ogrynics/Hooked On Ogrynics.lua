@@ -1,17 +1,24 @@
 --[[
 Title: Hooked On Ogrynics
-Version: 1.9
+Version: 2.0
 Author: Wobin
-Date: 24/09/2025
+Date: 10/10/2025
 Repository: https://github.com/Wobin/HookedOnOgrynics
 ]]--
 
 local mod = get_mod("Hooked On Ogrynics")
 local UIWidget = require("scripts/managers/ui/ui_widget")
 local MissionTemplates = require("scripts/settings/mission/mission_templates")
+local Missions = require("scripts/settings/mission/mission_templates")
 local UIRenderer = require("scripts/managers/ui/ui_renderer")
+local DLS = get_mod("DarktideLocalServer")
+local textures = mod:persistent_table("briefing_hologram_textures", {})
+local World = World
+local Unit = Unit
+local Mesh = Mesh
+local Material = Material
 
-mod.version = "1.9"
+mod.version = "2.0"
 
 local lookup = {
   ["loc_mission_board_main_objective_propaganda_description"] = "Stop_Noisy",
@@ -142,4 +149,19 @@ mod:hook_require("scripts/ui/views/mission_board_view_pj/mission_board_view_defi
   
 mod.on_all_mods_loaded = function()
   mod:info(mod.version)
+
+  if not texture or texture == {} then
+    DLS.load_directory_textures("textures"):next(function(file_names_to_texture_objects)
+        textures = file_names_to_texture_objects        
+    end)
+  end
+    
+  mod:hook_safe(CLASS.MissionIntroView, "_set_hologram_briefing_material", function(self, mission_name)
+
+    local mission = Missions[mission_name].mission_description
+    local hologram_unit = World.unit_by_name(self._world_spawner._world, "valkyrie_hologram_prototype_01")
+    local hologram_mesh = Unit.mesh(hologram_unit, 1)
+    local hologram_material = Mesh.material(hologram_mesh, 1)    
+    Material.set_resource(hologram_material, "bca", textures[mission].texture)
+  end)
 end
