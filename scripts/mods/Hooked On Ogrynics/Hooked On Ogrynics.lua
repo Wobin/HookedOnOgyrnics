@@ -1,6 +1,6 @@
 --[[
 Title: Hooked On Ogrynics
-Version: 2.0
+Version: 2.0.1
 Author: Wobin
 Date: 10/10/2025
 Repository: https://github.com/Wobin/HookedOnOgrynics
@@ -18,7 +18,7 @@ local Unit = Unit
 local Mesh = Mesh
 local Material = Material
 
-mod.version = "2.0"
+mod.version = "2.0.1"
 
 local lookup = {
   ["loc_mission_board_main_objective_propaganda_description"] = "Stop_Noisy",
@@ -150,18 +150,22 @@ mod:hook_require("scripts/ui/views/mission_board_view_pj/mission_board_view_defi
 mod.on_all_mods_loaded = function()
   mod:info(mod.version)
 
-  if not texture or texture == {} then
-    DLS.load_directory_textures("textures"):next(function(file_names_to_texture_objects)
-        textures = file_names_to_texture_objects        
-    end)
-  end
-    
-  mod:hook_safe(CLASS.MissionIntroView, "_set_hologram_briefing_material", function(self, mission_name)
+  if DLS then
+    if not texture or texture == {} then
+      DLS.load_directory_textures("textures"):next(function(file_names_to_texture_objects)
+          textures = file_names_to_texture_objects        
+      end)
+    end
+      
+    mod:hook_safe(CLASS.MissionIntroView, "_set_hologram_briefing_material", function(self, mission_name)
 
-    local mission = Missions[mission_name].mission_description
-    local hologram_unit = World.unit_by_name(self._world_spawner._world, "valkyrie_hologram_prototype_01")
-    local hologram_mesh = Unit.mesh(hologram_unit, 1)
-    local hologram_material = Mesh.material(hologram_mesh, 1)    
-    Material.set_resource(hologram_material, "bca", textures[mission].texture)
-  end)
+      local mission = Missions[mission_name].mission_description
+      local hologram_unit = World.unit_by_name(self._world_spawner._world, "valkyrie_hologram_prototype_01")
+      local hologram_mesh = Unit.mesh(hologram_unit, 1)
+      local hologram_material = Mesh.material(hologram_mesh, 1)    
+      Material.set_resource(hologram_material, "bca", textures[mission].texture)
+    end)
+
+  end
+
 end
