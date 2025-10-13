@@ -1,6 +1,6 @@
 --[[
 Title: Hooked On Ogrynics
-Version: 2.0.1
+Version: 2.1
 Author: Wobin
 Date: 10/10/2025
 Repository: https://github.com/Wobin/HookedOnOgrynics
@@ -18,7 +18,7 @@ local Unit = Unit
 local Mesh = Mesh
 local Material = Material
 
-mod.version = "2.0.1"
+mod.version = "2.1"
 
 local lookup = {
   ["loc_mission_board_main_objective_propaganda_description"] = "Stop_Noisy",
@@ -151,7 +151,7 @@ mod.on_all_mods_loaded = function()
   mod:info(mod.version)
 
   if DLS then
-    if not texture or texture == {} then
+    if not textures or textures == {} then
       DLS.load_directory_textures("textures"):next(function(file_names_to_texture_objects)
           textures = file_names_to_texture_objects        
       end)
@@ -160,6 +160,7 @@ mod.on_all_mods_loaded = function()
     mod:hook_safe(CLASS.MissionIntroView, "_set_hologram_briefing_material", function(self, mission_name)
 
       local mission = Missions[mission_name].mission_description
+      if not textures[mission] then return end
       local hologram_unit = World.unit_by_name(self._world_spawner._world, "valkyrie_hologram_prototype_01")
       local hologram_mesh = Unit.mesh(hologram_unit, 1)
       local hologram_material = Mesh.material(hologram_mesh, 1)    
