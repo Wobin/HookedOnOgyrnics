@@ -7,7 +7,7 @@ on:
 
 jobs:
   fetch-upload:
-    uses: wobin/DarktideModAutoUploader/.github/workflows/pack_mod.yml@v1.1a
+    uses: wobin/DarktideModAutoUploader/.github/workflows/pack_mod.yml@v1.2
     with:
       nexusmods_mod_id: 77 
       mod_version: ${{ github.event.release.name }}
