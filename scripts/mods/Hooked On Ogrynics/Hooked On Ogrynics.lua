@@ -149,24 +149,40 @@ mod:hook_require("scripts/ui/views/mission_board_view_pj/mission_board_view_defi
   
 mod.on_all_mods_loaded = function()
   mod:info(mod.version)
-
   if DLS then
-    if not textures or textures == {} then
-      DLS.load_directory_textures("textures"):next(function(file_names_to_texture_objects)
-          textures = file_names_to_texture_objects        
-      end)
-    end
-      
-    mod:hook_safe(CLASS.MissionIntroView, "_set_hologram_briefing_material", function(self, mission_name)
+    Promise.delay(7):next(function()
 
-      local mission = Missions[mission_name].mission_description
-      if not textures[mission] then return end
-      local hologram_unit = World.unit_by_name(self._world_spawner._world, "valkyrie_hologram_prototype_01")
-      local hologram_mesh = Unit.mesh(hologram_unit, 1)
-      local hologram_material = Mesh.material(hologram_mesh, 1)    
-      Material.set_resource(hologram_material, "bca", textures[mission].texture)
+      if #textures == 0 then
+        DLS.load_directory_textures("textures"):next(function(file_names_to_texture_objects)
+            textures = file_names_to_texture_objects                   
+        end)
+      end
+    end)
+    
+    mod:hook_safe(CLASS.MissionIntroView, "_set_hologram_briefing_material", function(self, mission_name)
+      mod.mission = Missions[mission_name].mission_description
     end)
 
-  end
+    mod:hook_safe(CLASS.MissionIntroView, "_initialize_background_world", function(self)
+      mod.shownMissionTitle = false
+    end)
 
+    mod:hook_safe(CLASS.MissionIntroView, "on_exit", function(self)
+      mod.shownMissionTitle = false
+      mod.mission = nil
+    end)
+
+    mod:hook_safe(CLASS.MissionIntroView, "_assign_player_to_slot",function (self, player, slot)
+      if not mod.shownMissionTitle and mod.mission then
+        if player:profile().archetype.breed == "ogryn" or mod:get("show_anyway") then
+        if not textures[mod.mission] then return end
+          local hologram_unit = World.unit_by_name(self._world_spawner._world, "valkyrie_hologram_prototype_01")
+          local hologram_mesh = Unit.mesh(hologram_unit, 1)
+          local hologram_material = Mesh.material(hologram_mesh, 1)    
+          Material.set_resource(hologram_material, "bca", textures[mod.mission].texture)
+          mod.shownMissionTitle = true
+        end
+      end
+    end)
+  end  
 end
