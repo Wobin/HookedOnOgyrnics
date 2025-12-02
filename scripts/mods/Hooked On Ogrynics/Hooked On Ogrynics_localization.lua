@@ -74,6 +74,9 @@ return {
    Stop_Ritual = {
      en = "Stop Cult Church"
    },
+   Tank_Buddy = {
+      en = "Tank Buddy"
+   },
    show_anyway ={
       en = "Show Valkyrie briefing even if there's no ogryn present"
    }

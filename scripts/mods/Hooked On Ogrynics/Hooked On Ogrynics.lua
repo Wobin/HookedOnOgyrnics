@@ -1,8 +1,8 @@
 --[[
 Title: Hooked On Ogrynics
-Version: 2.1
+Version: 2.2
 Author: Wobin
-Date: 10/10/2025
+Date: 02/12/2025
 Repository: https://github.com/Wobin/HookedOnOgrynics
 ]]--
 
@@ -18,7 +18,7 @@ local Unit = Unit
 local Mesh = Mesh
 local Material = Material
 
-mod.version = "2.1"
+mod.version = "2.2"
 
 local lookup = {
   ["loc_mission_board_main_objective_propaganda_description"] = "Stop_Noisy",
@@ -42,6 +42,7 @@ local lookup = {
   ["loc_mission_board_main_objective_core_research_description"] = "Make_Steely",
   ["loc_mission_board_main_objective_train_description"] = "Death_Train",
   ["loc_mission_board_main_objective_heresy_description"] = "Stop_Ritual",
+  ["loc_mission_board_main_objective_no_mans_land_description"] = "Tank_Buddy",
 }
 
 local resize_text = function(self, ogryn_widget)
@@ -58,7 +59,7 @@ local set_text = function(self, text)
     resize_text(self, ogryn_widget)		
 end
 
-mod:hook_safe(CLASS.MissionBoardView, "_update_mission_info_panel", function(self)       
+mod:hook_safe(CLASS.MissionBoardView, "_set_selected", function(self)         
     if not self:_mission(self._selected_mission_id, true) then return end
     local mission_template = MissionTemplates[self:_mission(self._selected_mission_id, true).map]       
     local ogryn_name = lookup[mission_template.mission_description]
@@ -72,7 +73,7 @@ mod:hook_safe(CLASS.MissionBoardView, "_set_selected_quickplay", function(self, 
      set_text(self, "Emprah_Picks")
 end)
 
-mod:hook_require("scripts/ui/views/mission_board_view_pj/mission_board_view_definitions", function(MissionBoardViewDefinitions)          
+mod:hook_require("scripts/ui/views/mission_board_view/mission_board_view_definitions", function(MissionBoardViewDefinitions)          
     if not MissionBoardViewDefinitions.ogryn_translation_template then      
       MissionBoardViewDefinitions.widget_definitions.ogryn_translation = UIWidget.create_definition({
           {
